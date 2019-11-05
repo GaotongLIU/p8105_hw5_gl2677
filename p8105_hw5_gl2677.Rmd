@@ -63,6 +63,9 @@ df =
                names_to = "week",
                values_to = "value")
 
-
+df %>% 
+  ggplot(aes(x = week, y = value, color = group)) + 
+  geom_point() + 
+  geom_line(aes(group = file_names))
 ```
 
