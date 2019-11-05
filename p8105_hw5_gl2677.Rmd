@@ -66,6 +66,12 @@ df =
 df %>% 
   ggplot(aes(x = week, y = value, color = group)) + 
   geom_point() + 
-  geom_line(aes(group = file_names))
+  geom_line(aes(group = file_names)) +
+  labs(title = "Spaghetti plot of observations on each subject over time")
 ```
+
+* The value in control group fluctuates bewteen `r df %>% filter(group  == "con") %>% pull(value) %>% max()` and `r df %>% filter(group  == "con") %>% pull(value) %>% min()` over eight weeks. 
+
+* The value in experiment group gradually increases over eight weeks. The mean value increases from `r df %>% filter(group  == "exp" & week == "1") %>% pull(value) %>% mean()`in week 1 to `r df %>% filter(group  == "exp" & week == "8") %>% pull(value) %>% mean()` in week 8. 
+
 
