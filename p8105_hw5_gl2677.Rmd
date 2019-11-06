@@ -110,3 +110,15 @@ sim_results =
   mutate(significant = as.numeric(p.value < 0.05))
 ```
 
+### Power and effect size
+```{r}
+sim_results %>% 
+  group_by(beta1_true) %>% 
+  summarise(power = sum(significant)/10000) %>% 
+  ggplot(aes(x = beta1_true, y = power)) + 
+  geom_point() +
+  geom_line() +
+  labs(title = "The association between effect size and power in simple linear regression model")
+```
+
+The power increases as the effect size of true beta1 increases. When true beta1 = 0, it is equal to null hypothesis. So the power is the probability to reject null under null hypothesis, which is near alpha = 0.05,  and this is exactly as expected.
