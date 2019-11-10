@@ -38,14 +38,18 @@ iris_with_missing = iris %>%
 missing_fill = function(x) {
   if (is.numeric(x)) {
     mean = mean(x, na.rm = TRUE)
-    x = replace_na(x, mean) %>% round(digits = 1)
+    x = replace_na(x, mean) %>% round(digits = 2)
   } else if (is.character(x)) {
     x = replace_na(x, "virginica")
   }
   return(x)
 }
 
-map(iris_with_missing, missing_fill) 
+map(iris_with_missing, missing_fill) %>% 
+  bind_rows() %>% 
+  head() %>% 
+  knitr::kable()
+
 ```
 
 ## Problem 2
@@ -70,9 +74,9 @@ df %>%
   labs(title = "Spaghetti plot of observations on each subject over time")
 ```
 
-* The value in control group fluctuates bewteen `r df %>% filter(group  == "con") %>% pull(value) %>% max()` and `r df %>% filter(group  == "con") %>% pull(value) %>% min()` over eight weeks. 
+* The value in the control group fluctuates between `r df %>% filter(group  == "con") %>% pull(value) %>% max()` and `r df %>% filter(group  == "con") %>% pull(value) %>% min()` over eight weeks. 
 
-* The value in experiment group gradually increases over eight weeks. The mean value increases from `r df %>% filter(group  == "exp" & week == "1") %>% pull(value) %>% mean()`in week 1 to `r df %>% filter(group  == "exp" & week == "8") %>% pull(value) %>% mean()` in week 8. 
+* The value in the experiment group gradually increases over eight weeks. The mean value increases from `r df %>% filter(group  == "exp" & week == "1") %>% pull(value) %>% mean()`in week 1 to `r df %>% filter(group  == "exp" & week == "8") %>% pull(value) %>% mean()` in week 8. 
 
 ## Problem 3
 ```{r}
@@ -118,10 +122,11 @@ sim_results %>%
   ggplot(aes(x = beta1_true, y = power)) + 
   geom_point() +
   geom_line() +
+  geom_text(aes(y = power + 0.03, label = power)) +
   labs(title = "The association between effect size and power in simple linear regression model")
 ```
 
-The power increases as the effect size of true beta1 increases. When true beta1 = 0, it is equal to null hypothesis. So the power is the probability to reject null under null hypothesis, which is near alpha = 0.05,  and this is exactly as expected.
+The power is the proportion of times the null was rejected and the effect size is the difference of the true value of beta 1 and 0. The power increases as the effect size of true beta1 increases. When true beta1 = 0, it is equal to the null hypothesis. So the power in this case is the probability to reject null under the null hypothesis, which is near alpha = 0.05.
 
 ### Estimate and True of beta1 
 ```{r}
@@ -143,7 +148,8 @@ sim_results %>%
        subtitle = "in all samples and in the samples for which the null was rejected")
 ```
 
+
 The sample average of estimate of beta1 across tests for which the null is rejected is not approximately equal to the true value of beta1. The overall sample average of estimate of beta1 is equal to the true value of beta1.
 
-This is because???
+This is because for small effect sizes, only thoes estimates that are by chance far away from true beta1 can be rejected, in other words, there is small probability to detect the true value of beta1. The significant results are distorted by the extreme results. For large effect sizes, as the true value is already big enough to be detected，so there is large probability to detect the true value of beta1. The significant(rejected) average is similar to overall average. 
 
